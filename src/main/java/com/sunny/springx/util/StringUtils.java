@@ -23,4 +23,23 @@ public class StringUtils {
 
         return null == str || str.length() == 0;
     }
+
+    /**
+     * 首字母小写
+     *
+     * @param str 字母字符串 A-65 a-97
+     * @return 小写后的字符串
+     */
+    public static String lowerFirstCase(String str) {
+        if (isBlank(str)) return "";
+
+        char[] chars = str.toCharArray();
+
+        int value = (int) chars[0];
+        //首个不是字母或者不是小写的字母不处理
+        if (value < 65 || value > 91) return str;
+
+        chars[0] += 32;
+        return String.valueOf(chars);
+    }
 }
