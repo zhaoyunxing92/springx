@@ -3,6 +3,7 @@
  */
 package com.sunny.springx.webmvc.servlet;
 
+import com.sunny.springx.annotation.Autowried;
 import com.sunny.springx.annotation.Controller;
 import com.sunny.springx.annotation.Service;
 import com.sunny.springx.util.StringUtils;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.*;
 
@@ -62,6 +64,37 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private void doAutoWried() {
+        if (ioc.isEmpty()) return;
+
+        for (Map.Entry<String, Object> entry : ioc.entrySet()) {
+            // 获取类中全部的字段
+            Field[] fields = entry.getValue().getClass().getDeclaredFields();
+
+            for (Field field : fields) {
+
+                // 不包含autowried注解的跳过
+                if (!field.isAnnotationPresent(Autowried.class)) continue;
+
+                Autowried autowried = field.getAnnotation(Autowried.class);
+
+                String beanId = autowried.value().trim();
+                if (StringUtils.isBlank(beanId)) {
+                    beanId = StringUtils.lowerFirstCase(field.getName());
+                }
+
+                //设置授权
+                field.setAccessible(true);
+                System.out.println("getbean>>" + ioc.get(beanId));
+                try {
+                    // 字段赋值
+                    field.set(entry.getValue(), ioc.get(beanId));
+                } catch (IllegalAccessException ex) {
+                    ex.printStackTrace();
+                }
+            }
+
+
+        }
     }
 
     private void doInstance() {
@@ -70,23 +103,23 @@ public class DispatcherServlet extends HttpServlet {
             for (String className : classNames) {
                 //根据名称实例化加了controller和service注解的类
                 Class<?> clazz = Class.forName(className);
-
+                // 处理Controller注解
                 if (clazz.isAnnotationPresent(Controller.class)) {
                     //key 默认类小写
-                    String key = StringUtils.lowerFirstCase(clazz.getName());
+                    String key = StringUtils.lowerFirstCase(clazz.getSimpleName());
                     ioc.put(key, clazz.newInstance());
-
+                    // 处理Service 注解
                 } else if (clazz.isAnnotationPresent(Service.class)) {
                     // 获取注解
                     Service service = clazz.getAnnotation(Service.class);
 
-                    String key = service.value();
-                    if (StringUtils.isBlank(key)) {
-                        key = StringUtils.lowerFirstCase(clazz.getSimpleName());
+                    String beanId = service.value();
+                    if (StringUtils.isBlank(beanId)) {
+                        beanId = StringUtils.lowerFirstCase(clazz.getSimpleName());
                     }
 
                     Object instance = clazz.newInstance();
-                    ioc.put(key, instance);
+                    ioc.put(beanId, instance);
                     // 一个接口被实现多次后需要异常
                     for (Class<?> anInterface : clazz.getInterfaces()) {
                         ioc.put(StringUtils.lowerFirstCase(anInterface.getSimpleName()), instance);
@@ -96,7 +129,7 @@ public class DispatcherServlet extends HttpServlet {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
-
+        ioc.forEach((key, value) -> System.out.println("ioc beans id" + key));
     }
 
     /**
