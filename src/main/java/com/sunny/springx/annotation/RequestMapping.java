@@ -7,13 +7,13 @@ import java.lang.annotation.*;
 
 /**
  * @author zhaoyunxing92
- * @date: 2018-12-31 01:50
+ * @date: 2018-12-31 02:34
  * @des:
  */
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface Service {
+public @interface RequestMapping {
     
     String value() default "";
 }
