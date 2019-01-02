@@ -28,7 +28,7 @@ public class StringUtils {
      * 首字母小写
      *
      * @param str 字母字符串 A-65 a-97
-     * @return 小写后的字符串
+     * @return 小写后的字符串  null则返回""
      */
     public static String lowerFirstCase(String str) {
         if (isBlank(str)) return "";
