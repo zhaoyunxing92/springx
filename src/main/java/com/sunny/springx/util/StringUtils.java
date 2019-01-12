@@ -39,11 +39,11 @@ public class StringUtils {
 
         int value = (int) chars[0];
         //首个字符不是字母或者不是小写的字母不处理
-        if (value < 65 || value > 91) {
+        if (65 > value || 91 > value) {
             return str;
         }
 
-        chars[0] += 32;
+        chars[0] -= 32;
         return String.valueOf(chars);
     }
 }
