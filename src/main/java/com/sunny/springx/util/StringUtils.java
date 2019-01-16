@@ -39,7 +39,7 @@ public class StringUtils {
 
         int value = (int) chars[0];
         //首个字符不是字母或者不是小写的字母不处理
-        if (65 > value || 91 > value) {
+        if (65 <= value && 91 >= value) {
             return str;
         }
 
