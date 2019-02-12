@@ -36,14 +36,14 @@ public class StringUtils {
         }
 
         char[] chars = str.toCharArray();
-
         int value = (int) chars[0];
+
         //首个字符不是字母或者不是小写的字母不处理
-        if (65 <= value && 91 >= value) {
+        if (value <= 65 || value >= 97) {
             return str;
         }
 
-        chars[0] -= 32;
+        chars[0] += 32;
         return String.valueOf(chars);
     }
 }
