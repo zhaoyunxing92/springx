@@ -26,12 +26,14 @@ import java.util.*;
  * @des: 处理全部请求
  */
 public class DispatcherServlet extends HttpServlet {
+
     // 加载配置文件
-    private Properties contextConfig = new Properties();
+    //private Properties contextConfig = new Properties();
     //存放class name
     private List<String> classNames = new ArrayList<>();
     // ioc 容器
     private Map<String, Object> ioc = new HashMap<>();
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -44,12 +46,12 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config) {
         //1. 加载配置文件
-        doLoadConfiguration(config.getInitParameter("contextConfigLocation"));
+        //doLoadConfiguration(config.getInitParameter("contextConfigLocation"));
 
         // 2.扫描相关类
-        doScanner(contextConfig.getProperty("scanPackage"));
+        doScanner(config.getInitParameter("scanPackage"));
 
         // 3.初始化类
         doInstance();
@@ -129,7 +131,7 @@ public class DispatcherServlet extends HttpServlet {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
-        ioc.forEach((key, value) -> System.out.println("ioc beans id" + key));
+        ioc.forEach((key, value) -> System.out.println("ioc beans id " + key));
     }
 
     /**
@@ -156,12 +158,12 @@ public class DispatcherServlet extends HttpServlet {
         }
     }
 
-    /**
-     * 加载配置文件
-     *
-     * @param contextConfigLocation 配置文件名称
-     */
-    private void doLoadConfiguration(String contextConfigLocation) {
+    //    /**
+    //     * 加载配置文件
+    //     *
+    //     * @param contextConfigLocation 配置文件名称
+    //     */
+   /* private void doLoadConfiguration(String contextConfigLocation) {
         // 通过Properties 读取配置文件
         InputStream resource = getClassLoader().getResourceAsStream(contextConfigLocation);
         try {
@@ -178,7 +180,7 @@ public class DispatcherServlet extends HttpServlet {
             }
         }
 
-    }
+    }*/
 
     private ClassLoader getClassLoader() {
         return this.getClass().getClassLoader();
