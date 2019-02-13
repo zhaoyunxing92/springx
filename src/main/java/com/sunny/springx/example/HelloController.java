@@ -1,12 +1,12 @@
 /**
  * Copyright(C) 2018 Hangzhou zhaoyunxing92 Technology Co., Ltd. All rights reserved.
  */
-package com.sunny.springx.demo;
+package com.sunny.springx.example;
 
-import com.sunny.springx.annotation.Autowried;
-import com.sunny.springx.annotation.Controller;
-import com.sunny.springx.annotation.RequestMapping;
-import com.sunny.springx.annotation.RequestParam;
+import com.sunny.springx.webmvc.annotation.Autowried;
+import com.sunny.springx.webmvc.annotation.Controller;
+import com.sunny.springx.webmvc.annotation.RequestMapping;
+import com.sunny.springx.webmvc.annotation.RequestParam;
 
 /**
  * @author zhaoyunxing92

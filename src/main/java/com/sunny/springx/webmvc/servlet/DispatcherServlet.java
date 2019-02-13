@@ -3,10 +3,10 @@
  */
 package com.sunny.springx.webmvc.servlet;
 
-import com.sunny.springx.annotation.Autowried;
-import com.sunny.springx.annotation.Controller;
-import com.sunny.springx.annotation.Service;
-import com.sunny.springx.util.StringUtils;
+import com.sunny.springx.webmvc.annotation.Autowried;
+import com.sunny.springx.webmvc.annotation.Controller;
+import com.sunny.springx.webmvc.annotation.Service;
+import com.sunny.springx.webmvc.util.StringUtils;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.*;
@@ -49,20 +48,24 @@ public class DispatcherServlet extends HttpServlet {
     public void init(ServletConfig config) {
         //1. 加载配置文件
         //doLoadConfiguration(config.getInitParameter("contextConfigLocation"));
-
         // 2.扫描相关类
         doScanner(config.getInitParameter("scanPackage"));
-
         // 3.初始化类
         doInstance();
         //4. 注入
         doAutoWried();
         //5. 初始化url
         initHandlerMapping();
-
     }
 
     private void initHandlerMapping() {
+        if (ioc.isEmpty()) return;
+        for (Map.Entry<String, Object> entry : ioc.entrySet()) {
+            // 获取类中全部的字段
+            Field[] fields = entry.getValue().getClass().getDeclaredFields();
+
+        }
+
     }
 
     private void doAutoWried() {
@@ -94,8 +97,6 @@ public class DispatcherServlet extends HttpServlet {
                     ex.printStackTrace();
                 }
             }
-
-
         }
     }
 
@@ -141,7 +142,7 @@ public class DispatcherServlet extends HttpServlet {
      */
     private void doScanner(String scanPackage) {
         System.out.println("==========开始扫描[" + scanPackage + "]包下面的文件==========");
-        // com.sunny.springx.demo 路径替换文件路径
+        // com.sunny.springx.example 路径替换文件路径
         URL url = getClassLoader().getResource("/" + scanPackage.replaceAll("\\.", "/"));
         assert url != null;
         File classDir = new File(url.getFile());
