@@ -21,13 +21,12 @@ public class SpringxServletContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        System.out.println("***************");
         //动态注册　dispatcherServlet
         ServletContext servletContext = sce.getServletContext();
         ServletRegistration.Dynamic dispatcherServlet = servletContext.addServlet("dispatcherServlet", DispatcherServlet.class);
-
+        //指定扫描的包
+        dispatcherServlet.setInitParameter("scanPackage", "com.sunny.springx.example");
         dispatcherServlet.addMapping("/*");
-        dispatcherServlet.setInitParameter("scanPackage", "com.sunny.springx.demo");
         dispatcherServlet.setLoadOnStartup(1);
     }
 
