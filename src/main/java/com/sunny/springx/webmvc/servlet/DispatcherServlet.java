@@ -59,12 +59,14 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws IOException, InvocationTargetException, IllegalAccessException {
-
-        Handler handler = getHeadler(req);
+        String url = req.getRequestURI();
+        String contextPath = req.getContextPath();
+        url = url.replace(contextPath, "").replaceAll("/+", "/");
+        Handler handler = getHeadler(url);
         //url 不存在４０４
         if (Objects.isNull(handler)) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            resp.getWriter().write("not found url > " + req.getRequestURI());
+            resp.getWriter().write("not found url : " + url);
             return;
         }
 
@@ -77,12 +79,9 @@ public class DispatcherServlet extends HttpServlet {
         resp.getWriter().write(invoke.toString());
     }
 
-    private Handler getHeadler(HttpServletRequest req) {
+    private Handler getHeadler(String url) {
         if (handerMapping.isEmpty()) return null;
-        String url = req.getRequestURI();
-        String contextPath = req.getContextPath();
-        url = url.replace(contextPath, "").replaceAll("/+", "/");
-
+        
         for (Handler handler : handerMapping) {
             Matcher matcher = handler.pattern.matcher(url);
             if (!matcher.matches()) continue;
