@@ -12,9 +12,8 @@ public interface HellerService {
     /**
      * say
      *
-     * @param name
      * @return
      */
-    String say(String name);
+    String say();
 
 }

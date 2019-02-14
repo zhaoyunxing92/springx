@@ -16,11 +16,10 @@ public class HellerServiceImpl implements HellerService {
     /**
      * say
      *
-     * @param name 姓名
      * @return string
      */
     @Override
-    public String say(String name) {
-        return name + " say: hello springx";
+    public String say() {
+        return " say: hello springx";
     }
 }

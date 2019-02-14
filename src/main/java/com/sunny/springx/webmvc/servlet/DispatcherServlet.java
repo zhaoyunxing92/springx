@@ -11,7 +11,6 @@ import com.sunny.springx.webmvc.annotation.Service;
 import com.sunny.springx.webmvc.util.StringUtils;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,22 +33,20 @@ import java.util.regex.Pattern;
  */
 public class DispatcherServlet extends HttpServlet {
 
-    // 加载配置文件
-    //private Properties contextConfig = new Properties();
     //存放class name
     private List<String> classNames = new ArrayList<>();
     // ioc 容器
     private Map<String, Object> ioc = new HashMap<>();
     //handMapping
-    private List<Handler> handerMapping = new ArrayList<>();
+    private List<Handler> handlerMapping = new ArrayList<>();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         doPost(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
             doDispatch(req, resp);
         } catch (Exception e) {
@@ -62,7 +59,8 @@ public class DispatcherServlet extends HttpServlet {
         String url = req.getRequestURI();
         String contextPath = req.getContextPath();
         url = url.replace(contextPath, "").replaceAll("/+", "/");
-        Handler handler = getHeadler(url);
+
+        Handler handler = getHandler(url);
         //url 不存在４０４
         if (Objects.isNull(handler)) {
             resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -70,19 +68,16 @@ public class DispatcherServlet extends HttpServlet {
             return;
         }
 
-        // 获取请求参数
-        Map<String, String[]> parameterMap = req.getParameterMap();
-
         // 获取方法
         Object invoke = handler.method.invoke(handler.controller, "");
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(invoke.toString());
     }
 
-    private Handler getHeadler(String url) {
-        if (handerMapping.isEmpty()) return null;
-        
-        for (Handler handler : handerMapping) {
+    private Handler getHandler(String url) {
+        if (handlerMapping.isEmpty()) return null;
+
+        for (Handler handler : handlerMapping) {
             Matcher matcher = handler.pattern.matcher(url);
             if (!matcher.matches()) continue;
             return handler;
@@ -133,7 +128,7 @@ public class DispatcherServlet extends HttpServlet {
                 // 拼接rootUrl 全局替换避免两个斜杠 正则
                 String reg = ("/" + rootUrl + requestMapping.value()).replaceAll("/+", "/");
 
-                handerMapping.add(new Handler(method, entry.getValue(), Pattern.compile(reg)));
+                handlerMapping.add(new Handler(method, entry.getValue(), Pattern.compile(reg)));
                 System.out.println("mapping:" + reg + "," + method);
             }
         }
@@ -235,13 +230,13 @@ public class DispatcherServlet extends HttpServlet {
     }
 
     private class Handler {
-        protected Method method;
+        Method method;
         //方法对象实力
-        protected Object controller;
+        Object controller;
         //url正则
-        protected Pattern pattern;
+        Pattern pattern;
 
-        protected Handler(Method method, Object controller, Pattern pattern) {
+        Handler(Method method, Object controller, Pattern pattern) {
             this.method = method;
             this.controller = controller;
             this.pattern = pattern;

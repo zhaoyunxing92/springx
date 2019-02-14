@@ -22,8 +22,8 @@ public class HelloController {
     private HellerService hellerService;
 
     @RequestMapping("/say")
-    public String controllerSay(@RequestParam("name") String name) {
+    public String controllerSay() {
 
-        return hellerService.say(name);
+        return hellerService.say();
     }
 }
