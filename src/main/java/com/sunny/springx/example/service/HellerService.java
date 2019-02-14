@@ -1,7 +1,7 @@
 /**
  * Copyright(C) 2018 Hangzhou zhaoyunxing92 Technology Co., Ltd. All rights reserved.
  */
-package com.sunny.springx.example;
+package com.sunny.springx.example.service;
 
 /**
  * @author zhaoyunxing92

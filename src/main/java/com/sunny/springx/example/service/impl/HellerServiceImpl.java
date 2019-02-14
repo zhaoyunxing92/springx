@@ -1,10 +1,10 @@
 /**
  * Copyright(C) 2018 Hangzhou zhaoyunxing92 Technology Co., Ltd. All rights reserved.
  */
-package com.sunny.springx.example.impl;
+package com.sunny.springx.example.service.impl;
 
 import com.sunny.springx.webmvc.annotation.Service;
-import com.sunny.springx.example.HellerService;
+import com.sunny.springx.example.service.HellerService;
 
 /**
  * @author zhaoyunxing92
