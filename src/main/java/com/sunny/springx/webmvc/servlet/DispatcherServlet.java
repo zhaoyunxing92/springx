@@ -74,6 +74,30 @@ public class DispatcherServlet extends HttpServlet {
         resp.getWriter().write(invoke.toString());
     }
 
+
+    @Override
+    public void init(ServletConfig config) {
+        Instant start = Instant.now();
+        // 1.扫描相关类
+        doScanner(config.getInitParameter("scanPackage"));
+        // 2.初始化类
+        doInstance();
+        // 3. 注入
+        doAutoWried();
+        // 4. 初始化url
+        initHandlerMapping();
+
+        Instant end = Instant.now();
+
+        System.out.println("springx init in " + Duration.between(start, end).toMillis() + " ms");
+    }
+
+    /**
+     * 获取　handler
+     *
+     * @param url 请求url
+     * @return
+     */
     private Handler getHandler(String url) {
         if (handlerMapping.isEmpty()) return null;
 
@@ -83,26 +107,6 @@ public class DispatcherServlet extends HttpServlet {
             return handler;
         }
         return null;
-    }
-
-
-    @Override
-    public void init(ServletConfig config) {
-        Instant start = Instant.now();
-        //1. 加载配置文件
-        //doLoadConfiguration(config.getInitParameter("contextConfigLocation"));
-        // 2.扫描相关类
-        doScanner(config.getInitParameter("scanPackage"));
-        // 3.初始化类
-        doInstance();
-        //4. 注入
-        doAutoWried();
-        //5. 初始化url
-        initHandlerMapping();
-
-        Instant end = Instant.now();
-
-        System.out.println("springx init in " + Duration.between(start, end).toMillis() + " ms");
     }
 
     private void initHandlerMapping() {
