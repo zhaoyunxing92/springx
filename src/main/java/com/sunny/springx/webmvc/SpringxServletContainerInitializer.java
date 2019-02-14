@@ -14,11 +14,11 @@ import java.util.Set;
 /**
  * @author sunny
  * @date: 2019-02-13 00:54
- * @des: 监听容器初始化 spi机制
+ * @des: 容器初始化利用spi机制注入DispatcherServlet
  */
-public class SpringxServletContextListener implements ServletContainerInitializer {
+public class SpringxServletContainerInitializer implements ServletContainerInitializer {
     @Override
-    public void onStartup(Set<Class<?>> c, ServletContext ctx) throws ServletException {
+    public void onStartup(Set<Class<?>> c, ServletContext ctx) {
         ServletRegistration.Dynamic dispatcherServlet = ctx.addServlet("dispatcherServlet", DispatcherServlet.class);
         dispatcherServlet.setInitParameter("scanPackage", "com.sunny.springx.example");
         dispatcherServlet.addMapping("/*");
