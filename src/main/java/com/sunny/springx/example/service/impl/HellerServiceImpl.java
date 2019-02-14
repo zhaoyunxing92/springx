@@ -20,6 +20,6 @@ public class HellerServiceImpl implements HellerService {
      */
     @Override
     public String say() {
-        return " say: hello springx";
+        return "hello springx";
     }
 }

@@ -69,7 +69,7 @@ public class DispatcherServlet extends HttpServlet {
         }
 
         // 获取方法
-        Object invoke = handler.method.invoke(handler.controller, "");
+        Object invoke = handler.method.invoke(handler.controller, null);
         resp.setStatus(HttpServletResponse.SC_OK);
         resp.getWriter().write(invoke.toString());
     }
